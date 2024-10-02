@@ -1,6 +1,7 @@
 package com.example.ppro_c.model;
 
 public class Car {
+    private int id = -1;
     private String spz;
     private String engine;
     private String color;
@@ -56,5 +57,13 @@ public class Car {
 
     public void setNumberOfSeats(int numberOfSeats) {
         this.numberOfSeats = numberOfSeats;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
