@@ -1,23 +1,24 @@
 package com.example.ppro_c.model;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class Car {
     private int id = -1;
+    @Size(min=7, max=7, message = "Wrong SPZ")
     private String spz;
+    @NotBlank
     private String engine;
+    @NotBlank
     private String color;
+    @Min(value = 30)
+    @Max(value = 100)
     private float tankVolume;
+    @Min(value = 1)
+    @Max(value = 10)
     private int numberOfSeats;
-
-    public Car(String spz, String engine, String color, float tankVolume, int numberOfSeats) {
-        this.spz = spz;
-        this.engine = engine;
-        this.color = color;
-        this.tankVolume = tankVolume;
-        this.numberOfSeats = numberOfSeats;
-    }
-    public Car() {
-
-    }
 
     public String getSpz() {
         return spz;

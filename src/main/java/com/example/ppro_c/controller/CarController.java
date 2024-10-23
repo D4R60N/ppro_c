@@ -1,67 +1,68 @@
 package com.example.ppro_c.controller;
 
 import com.example.ppro_c.model.Car;
+import com.example.ppro_c.service.CarService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequestMapping("/cars")
 public class CarController {
-    List<Car> cars = new ArrayList<Car>();
+
+    private CarService carService;
+
+    @Autowired
+    public CarController(CarService carService) {
+        this.carService = carService;
+    }
 
     @GetMapping("/")
     public String list(Model model) {
         //cars.add(new Car("abs", "sa", "red", 1.0f, 4));
-        model.addAttribute("cars", cars);
-        return "list";
+        model.addAttribute("cars", carService.getAllCars());
+        return "car_list";
     }
 
     @GetMapping("/detail/{index}")
     public String detail(@PathVariable int index, Model model) {
-        if (index >= cars.size() || index < 0) {
-            return "redirect:/";
+        Car car = carService.getCarById(index);
+        if (car != null) {
+            model.addAttribute("car", car);
+            return "car_detail";
         }
-        Car car = cars.get(index);
-        model.addAttribute("car", car);
-        return "detail";
+        return "redirect:/cars/";
     }
     @GetMapping("/delete/{index}")
     public String delete(@PathVariable int index) {
-        if (index >= cars.size() || index < 0) {
-            return "redirect:/";
-        }
-        Car car = cars.remove(index);
-        return "redirect:/";
+        carService.deleteCarById(index);
+        return "redirect:/cars/";
     }
     @GetMapping("/create")
     public String create(Model model) {
         model.addAttribute("car", new Car());
         model.addAttribute("edit", false);
-        return "edit";
+        return "car_edit";
     }
     @GetMapping("/edit/{index}")
     public String edit(@PathVariable int index, Model model) {
-        if (index >= cars.size() || index < 0) {
-            return "redirect:/";
-        }
-        Car car = cars.get(index);
+
+        Car car = carService.getCarById(index);
         car.setId(index);
         model.addAttribute("car", car);
         model.addAttribute("edit", true);
-        return "edit";
+        return "car_edit";
     }
     @PostMapping("/save")
-    public String save(@ModelAttribute Car car) {
-        if (car.getId() > -1) {
-            cars.remove(car.getId());
+    public String save(@Valid Car car, BindingResult bindingResult, Model model) {
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("edit", true);
+            return "car_edit";
         }
-        cars.add(car);
-        return "redirect:/";
+        carService.saveCar(car);
+        return "redirect:/cars/";
     }
 }
