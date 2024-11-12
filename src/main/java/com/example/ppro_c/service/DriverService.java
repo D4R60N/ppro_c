@@ -3,14 +3,14 @@ package com.example.ppro_c.service;
 import com.example.ppro_c.model.Driver;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public interface DriverService {
-    ArrayList<Driver> getAllDrivers();
-    Driver getDriverById(int id);
+    List<Driver> getAllDrivers();
+    Driver getDriverById(long id);
 
-    void deleteDriverById(int id);
+    void deleteDriverById(long id);
 
     void saveDriver(Driver driver);
 }

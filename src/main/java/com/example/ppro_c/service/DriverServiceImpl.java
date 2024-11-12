@@ -1,39 +1,40 @@
 package com.example.ppro_c.service;
 
 import com.example.ppro_c.model.Driver;
+import com.example.ppro_c.repository.DriverRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DriverServiceImpl implements DriverService {
-    ArrayList<Driver> drivers = new ArrayList<Driver>();
-    @Override
-    public ArrayList<Driver> getAllDrivers() {
-        return drivers;
+    DriverRepository driverRepository;
+
+    public DriverServiceImpl(DriverRepository driverRepository) {
+        this.driverRepository = driverRepository;
     }
 
     @Override
-    public Driver getDriverById(int id) {
-        if (id >= drivers.size() || id < 0) {
-            return null;
-        }
-        return drivers.get(id);
+    public List<Driver> getAllDrivers() {
+        return driverRepository.findAll();
     }
 
     @Override
-    public void deleteDriverById(int id) {
-        if (id < drivers.size() && id >= 0) {
-            Driver driver = drivers.remove(id);
-        }
+    public Driver getDriverById(long id) {
+        return driverRepository.findById(id).orElse(null);
+    }
 
+    @Override
+    public void deleteDriverById(long id) {
+        Optional<Driver> driver = driverRepository.findById(id);
+        if (driver.isPresent()) {
+            driverRepository.delete(driver.get());
+        }
     }
 
     @Override
     public void saveDriver(Driver driver) {
-        if (driver.getId() > -1) {
-            drivers.remove(driver.getId());
-        }
-        drivers.add(driver);
+        driverRepository.save(driver);
     }
 }
